@@ -31,6 +31,95 @@ alter table "productSize" add column "created_at" timestamp default now() not nu
 alter table "productSize" add column"update_at" timestamp;
 alter table "products" alter column "discount" type float;
 
+create table if not exists "productVariant"(
+	"id" serial primary key,
+	"name" varchar (50),
+	"adittionalPrice" numeric(6),
+	"created_at" timestamp default now() not null,
+	"update_at" timestamp
+);
+
+create table if not exists "tags"(
+	"id" serial primary key,
+	"name" varchar,
+	"created_at" timestamp default now() not null,
+	"update_at" timestamp
+);
+
+create table if not exists "productTags"(
+	"id" serial primary key,
+	"productid" int references "products"("id"),
+	"tagid" int references "tags"("id"),
+	"created_at" timestamp default now() not null,
+	"update_at" timestamp
+);
+
+create table if not exists "productRatings"(
+	"id" serial primary key,
+	"productid" int references "products"("id"),
+	"rate" numeric (1),
+	"reviewMessage" text,
+	"userid" int references "users"("id"),
+	"created_at" timestamp default now() not null,
+	"update_at" timestamp
+);
+create table if not exists "categories"(
+	"id" serial primary key,
+	"name" varchar,
+	"created_at" timestamp default now() not null,
+	"update_at" timestamp
+);
+create table if not exists "productCategories"(
+	"id" serial primary key,
+	"productid" int references "products"("id"),
+	"categoryid" int references "categories"("id"),
+	"created_at" timestamp default now() not null,
+	"update_at" timestamp
+);
+create table if not exists "promo"(
+	"id" serial primary key,
+	"name" varchar(20) not null,
+	"code" varchar(20) not null,
+	"description" varchar,
+	"percentage" float,
+	"isExpired" boolean,
+	"maximumPromo"int,
+	"minimumAmount"int,
+	"created_at" timestamp default now() not null,
+	"update_at" timestamp
+);
+create table if not exists "orders"(
+	"id" serial primary key,
+	"userid" int references "users"("id"),
+	"orderNumber" varchar,
+	"promoid" int references "promo"("id"),
+	"total" numeric (15,2),
+	"taxAmount" numeric (12,2),
+	"status" varchar(15) check (status in ('on-progress','delivered','canceled','ready-to-pick')) not null,
+	"deliveryAddress" text ,
+	"fullName" varchar,
+	"email" varchar,
+	"created_at" timestamp default now() not null,
+	"update_at" timestamp
+);
+create table if not exists "orderDetails"(
+	"id" serial primary key,
+	"productid" int references "products"("id"),
+	"productSizeid" int references "productSize"("id"),
+	"productVariantid" int references "productVariant"("id"),
+	"quantity" numeric(10,2),
+	"orderId" int references "orders"("id"),
+	"created_at" timestamp default now() not null,
+	"update_at" timestamp
+);
+create table if not exists "message"(
+	"id" serial primary key,
+	"recipientid" int references "users"("id"),
+	"senderid" int references "users"("id"),
+	"text" text,
+	"created_at" timestamp default now() not null,
+	"update_at" timestamp
+);
 
 
 
