@@ -121,8 +121,18 @@ create table if not exists "message"(
 	"update_at" timestamp
 );
 
+insert into "users" ("fullName", "email", "password", "address", "picture", "phoneNumber", "role")
+values('Rahman Sofyan', 'rahman@gmail.com', 'password123', '99 bali, sanur', null, '08796876', 'customer'),
+	('Ran', 'ran@gmail.com', 'pass', 'jl.taman jaya', null, '0876543210', 'admin');
+insert into "products" ("name", "description", "price", "image", "discount", "isRecommended")
+values('Espresso', 'Single shot of espresso', 25000, null, 0.10,null),
+    ('Cappuccino', 'Espresso steamed milk and foam', 30000, null, null, true);
 
+insert into "productSize" ("size", "additionalPrice")
+values ('small', 0),('medium', 3000),('large',5000);
 
+insert into "productVariant" ("name", "adittionalPrice")
+values('Original', 0),('Spicy', 2000);
 
 
 
