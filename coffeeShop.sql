@@ -134,6 +134,48 @@ values ('small', 0),('medium', 3000),('large',5000);
 insert into "productVariant" ("name", "adittionalPrice")
 values('Original', 0),('Spicy', 2000);
 
+insert into "tags" ("name") values ('Flash sale'),('Buy 1 get 1'),('Birthday Package'),('Cheap');
+
+insert into"productTags" ("productid", "tagid")
+values(1, 1),(2, 2),(1,4);
+
+insert into "productRatings" ("productid", "rate", "reviewMessage", "userid")
+values(1, 4.0, 'mantap coffee!', 1),(2, 5.0, 'cappuccino nya enak!', 1);
+
+insert into "categories" ("name")
+values('Favorite Product'),('Coffee'),('Non Coffee'),('Foods'),('Add-On');
+
+insert into "productCategories" ("productid", "categoryid")
+values(1, 2),(2, 2);
+
+insert into "promo" ("name", "code", "description", "percentage", "isExpired", "maximumPromo", "minimumAmount")
+values ('HAPPY MOTHER’S DAY!', 'MOTHERDAY', '50% off on selected items', 0.50, false, 10000, 50000);
+
+insert into "orders" ("userid", "orderNumber", "promoid", "total", "taxAmount", "status", "deliveryAddress", "fullName", "email")
+values(1, '001-11112023-0023', 1, 30000, null, 'on-progress', '123 Elm St', '99 bali, sanur', 'rahman@gmail.com'),
+    	(1, '001-11112023-0024', 1, 45000, null, 'delivered', '456 Oak St', '99 bali, sanur', 'rahman@gmail.com');
+
+insert into "orderDetails" ("productid", "productSizeid", "productVariantid", "quantity", "orderId")
+values(1, 1, 1, 2, 1),(2, 2, 1, 1, 2);
+
+insert into "message" ("recipientid", "senderid", "text")
+values(1, 2, 'Hello, admin!'),(2, 1, 'Hi, Rahman! ada yg bisa saya bantu?');
+
+--melihat semua data di product dan productCategory
+select "p".*, "c".*
+FROM "products" "p"
+JOIN "productCategories" "pc" ON "p"."id" = "pc"."productid";
+
+--melihat data produk nama,harga,deskripsi dan tags dari produk
+select "p"."name","price","description","t"."name" from "products" "p"
+join "productTags" "pt" on "pt"."id" = "p"."id"
+join "tags" "t" on "t"."id" = "pt"."id";
+
+
+
+
+
+
 
 
 
