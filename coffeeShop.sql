@@ -14,26 +14,28 @@ create table if not exists "products" (
     "id" serial primary key,
     "name" varchar not null,
     "description" text,
-    "price" numeric(10, 2),
+    "basePrice" int not null,
     "image" varchar,
-    "discount" numeric(5, 2),
-    "isRecommended" boolean
+    "discount" numeric(3,2),
+    "isRecommended" boolean,
+    "created_at" timestamp default now() not null,
+	"update_at" timestamp
 );
 
 create table if not exists "productSize" (
     "id" serial primary key,
     "size" varchar(15) check (size in ('small', 'medium', 'large')) not null,
-    "additionalPrice" numeric(6) not null
+    "productid" int references "products"("id"),
+    "additionalPrice" numeric(6) not null,
+    "created_at" timestamp default now() not null,
+	"update_at" timestamp
 );
-alter table "products" add column "created_at" timestamp default now() not null;
-alter table "products" add column"update_at" timestamp;
-alter table "productSize" add column "created_at" timestamp default now() not null;
-alter table "productSize" add column"update_at" timestamp;
-alter table "products" alter column "discount" type float;
+
 
 create table if not exists "productVariant"(
 	"id" serial primary key,
 	"name" varchar (50),
+	"productid" int references "products"("id"),
 	"adittionalPrice" numeric(6),
 	"created_at" timestamp default now() not null,
 	"update_at" timestamp
@@ -48,8 +50,8 @@ create table if not exists "tags"(
 
 create table if not exists "productTags"(
 	"id" serial primary key,
-	"productid" int references "products"("id"),
 	"tagid" int references "tags"("id"),
+	"productid" int references "products"("id"),
 	"created_at" timestamp default now() not null,
 	"update_at" timestamp
 );
@@ -57,7 +59,7 @@ create table if not exists "productTags"(
 create table if not exists "productRatings"(
 	"id" serial primary key,
 	"productid" int references "products"("id"),
-	"rate" numeric (1),
+	"rate" int,
 	"reviewMessage" text,
 	"userid" int references "users"("id"),
 	"created_at" timestamp default now() not null,
@@ -78,13 +80,13 @@ create table if not exists "productCategories"(
 );
 create table if not exists "promo"(
 	"id" serial primary key,
-	"name" varchar(20) not null,
+	"name" varchar(30) not null,
 	"code" varchar(20) not null,
-	"description" varchar,
-	"percentage" float,
-	"isExpired" boolean,
-	"maximumPromo"int,
-	"minimumAmount"int,
+	"description" text,
+	"percentage" numeric(3,2),
+	"expireadAt" timestamp not null ,
+	"maximumPromo" int,
+	"minimumAmount" int,
 	"created_at" timestamp default now() not null,
 	"update_at" timestamp
 );
@@ -122,55 +124,22 @@ create table if not exists "message"(
 );
 
 insert into "users" ("fullName", "email", "password", "address", "picture", "phoneNumber", "role")
-values('Rahman Sofyan', 'rahman@gmail.com', 'password123', '99 bali, sanur', null, '08796876', 'customer'),
-	('Ran', 'ran@gmail.com', 'pass', 'jl.taman jaya', null, '0876543210', 'admin');
-insert into "products" ("name", "description", "price", "image", "discount", "isRecommended")
-values('Espresso', 'Single shot of espresso', 25000, null, 0.10,null),
-    ('Cappuccino', 'Espresso steamed milk and foam', 30000, null, null, true);
+values('Ran', 'ran@gmail.com', 'pass', 'jl.taman jaya', null, '0876543210', 'admin'),
+('Rahman Sofyan', 'rahman@gmail.com', 'password123', '99 bali, sanur', null, '08796876', 'customer'),
+('Budi', 'budi@gmail.com', 'budi123', 'Jl. Pahlawan No. 123', null, '0812345678', 'customer'),
+('Siti', 'siti@gmail.com', 'siti456', 'Jl. Merdeka No. 456', null, '0898765432', 'customer');
 
-insert into "productSize" ("size", "additionalPrice")
-values ('small', 0),('medium', 3000),('large',5000);
-
-insert into "productVariant" ("name", "adittionalPrice")
-values('Original', 0),('Spicy', 2000);
-
-insert into "tags" ("name") values ('Flash sale'),('Buy 1 get 1'),('Birthday Package'),('Cheap');
-
-insert into"productTags" ("productid", "tagid")
-values(1, 1),(2, 2),(1,4);
-
-insert into "productRatings" ("productid", "rate", "reviewMessage", "userid")
-values(1, 4.0, 'mantap coffee!', 1),(2, 5.0, 'cappuccino nya enak!', 1);
-
-insert into "categories" ("name")
-values('Favorite Product'),('Coffee'),('Non Coffee'),('Foods'),('Add-On');
-
-insert into "productCategories" ("productid", "categoryid")
-values(1, 2),(2, 2);
-
-insert into "promo" ("name", "code", "description", "percentage", "isExpired", "maximumPromo", "minimumAmount")
-values ('HAPPY MOTHER’S DAY!', 'MOTHERDAY', '50% off on selected items', 0.50, false, 10000, 50000);
-
-insert into "orders" ("userid", "orderNumber", "promoid", "total", "taxAmount", "status", "deliveryAddress", "fullName", "email")
-values(1, '001-11112023-0023', 1, 30000, null, 'on-progress', '123 Elm St', '99 bali, sanur', 'rahman@gmail.com'),
-    	(1, '001-11112023-0024', 1, 45000, null, 'delivered', '456 Oak St', '99 bali, sanur', 'rahman@gmail.com');
-
-insert into "orderDetails" ("productid", "productSizeid", "productVariantid", "quantity", "orderId")
-values(1, 1, 1, 2, 1),(2, 2, 1, 1, 2);
-
-insert into "message" ("recipientid", "senderid", "text")
-values(1, 2, 'Hello, admin!'),(2, 1, 'Hi, Rahman! ada yg bisa saya bantu?');
-
---melihat semua data di product dan productCategory
-select "p".*, "c".*
-FROM "products" "p"
-JOIN "productCategories" "pc" ON "p"."id" = "pc"."productid";
-
---melihat data produk nama,harga,deskripsi dan tags dari produk
-select "p"."name","price","description","t"."name" from "products" "p"
-join "productTags" "pt" on "pt"."id" = "p"."id"
-join "tags" "t" on "t"."id" = "pt"."id";
-
+insert into "products" ("name", "description", "basePrice", "image", "discount", "isRecommended")
+values('Espresso', 'Single shot of espresso', 25000, null, null,null),
+    ('Cappuccino', 'Espresso steamed milk and foam', 30000, null, null, true),
+  	('Latte', 'Espresso and steamed milk with a small amount of foam', 35000, null, null, null),
+  	('Mocha', 'Espresso steamed milk chocolate and whipped cream', 38000, null, null, null),
+  	('Americano', 'Diluted espresso with hot water', 22000, null, null, null),
+  	('Macchiato', 'Espresso stained or marked with a small amount of foam', 28000, null, null, null),
+  	('Iced Coffee', 'Chilled brewed coffee served over ice', 26000, null, null, null),
+  	('Caramel Frappuccino', 'Blended coffee caramel milk ice topped whipped cream', 40000, null, null, null),
+  	('Irish Coffee', 'Hot coffee Irish whiskey sugar topped cream', 32000, null, null, null),
+  	('Chai Latte', 'Black tea spices steamed milk', 36000, null, null, null);
 
 
 
