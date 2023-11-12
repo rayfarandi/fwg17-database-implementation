@@ -283,8 +283,8 @@ values(5, 18, 10, 1, 9, (22000+3000+5000));
 insert into "orderDetails" ("productid", "productSizeid" ,"productVariantid" , "quantity", "orderId", "subtotal")
 values(5, 18, 10, 1, 9,
 ((select "basePrice" from "products" where "id" = 5 )+
-(select "additionalPrice" from "productVariannt"where "id" = 10)+
-(select "additionalPrice" from "productSize"where "id"=18));
+(select "additionalPrice" from "productVariant"where "id" = 10)+
+(select "additionalPrice" from "productSize"where "id"=18)));
 -- Detail transaksi untuk (machiato+ice+medium) customer Siti
 insert into "orderDetails" ("productid", "productSizeid" ,"productVariantid" , "quantity", "orderId", "subtotal")
 values(6, 20, 12, 1, 9, (28000+3000+3000));
@@ -292,8 +292,8 @@ values(6, 20, 12, 1, 9, (28000+3000+3000));
 insert into "orderDetails" ("productid", "productSizeid" ,"productVariantid" , "quantity", "orderId", "subtotal")
 values(6, 20, 12, 1, 9,
 ((select "basePrice" from "products" where "id" = 7 )+
-(select "additionalPrice" from "productVariannt"where "id" = 12)+
-(select "additionalPrice" from "productSize"where "id"=20));
+(select "additionalPrice" from "productVariant"where "id" = 12)+
+(select "additionalPrice" from "productSize"where "id"=20)));
 -- Detail transaksi untuk (iceCoffee+ice+large) customer Siti
 insert into "orderDetails" ("productid", "productSizeid" ,"productVariantid" , "quantity", "orderId", "subtotal")
 values(7, 24, 14, 1, 9, (26000+3000+5000));
@@ -301,8 +301,8 @@ values(7, 24, 14, 1, 9, (26000+3000+5000));
 insert into "orderDetails" ("productid", "productSizeid" ,"productVariantid" , "quantity", "orderId", "subtotal")
 values(7, 24, 14, 1, 9,
 ((select "basePrice" from "products" where "id" = 7 )+
-(select "additionalPrice" from "productVariannt"where "id" = 14)+
-(select "additionalPrice" from "productSize"where "id"=24));
+(select "additionalPrice" from "productVariant"where "id" = 14)+
+(select "additionalPrice" from "productSize"where "id"=24)));
 -- Detail transaksi untuk (caramelFrapechino+ice+large) customer Siti
 insert into "orderDetails" ("productid", "productSizeid" ,"productVariantid" , "quantity", "orderId", "subtotal")
 values(8, 27, 16, 1, 9, (40000+3000+5000));
@@ -310,8 +310,8 @@ values(8, 27, 16, 1, 9, (40000+3000+5000));
 insert into "orderDetails" ("productid", "productSizeid" ,"productVariantid" , "quantity", "orderId", "subtotal")
 values(8, 27, 16, 1, 9, 
 ((select "basePrice" from "products" where "id" = 8 )+
-(select "additionalPrice" from "productVariannt"where "id" = 16)+
-(select "additionalPrice" from "productSize"where "id"=27));
+(select "additionalPrice" from "productVariant"where "id" = 16)+
+(select "additionalPrice" from "productSize"where "id"=27)));
 -- Detail transaksi untuk (irisCoffe+hot+small) customer Siti
 insert into "orderDetails" ("productid", "productSizeid" ,"productVariantid" , "quantity", "orderId", "subtotal")
 values(9, 28, 17, 1, 9, (32000+0+0));
@@ -319,8 +319,8 @@ values(9, 28, 17, 1, 9, (32000+0+0));
 insert into "orderDetails" ("productid", "productSizeid" ,"productVariantid" , "quantity", "orderId", "subtotal")
 values(9, 28, 17, 1, 9, 
 ((select "basePrice" from "products" where "id" = 9 )+
-(select "additionalPrice" from "productVariannt"where "id" = 17)+
-(select "additionalPrice" from "productSize"where "id"=28));
+(select "additionalPrice" from "productVariant"where "id" = 17)+
+(select "additionalPrice" from "productSize"where "id"=28)));
 
 --tes joint
 select "o"."orderNumber" ,"p"."name", "od"."quantity" ,"od"."subtotal", "o"."total" from "orders" "o"
