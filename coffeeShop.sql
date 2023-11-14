@@ -322,9 +322,92 @@ values(9, 28, 17, 1, 9,
 (select "additionalPrice" from "productVariant"where "id" = 17)+
 (select "additionalPrice" from "productSize"where "id"=28)));
 
---tes joint
+--delet pesanan dengan nama iris coffe dengan order no ORD-009-12112023
+delete from "orderDetails"
+where "productid" = (select "id" from "products" where "name" ilike '%ris%')
+and "orderId" = (select "id" from "orders" where "orderNumber" = 'ORD-009-12112023');
+--hasil nya pesanan dengan nama iris coffe dengan order no ORD-009-12112023 sudah terhapus
+select * from "orderDetails"
+where "productid" = (select "id" from "products" where "name"  ilike  '%ris%');
+----
+
+-- Menambahkan transaksi untuk customer Rahman mengunakan Agregasi
+-- Order 6 Promo FAZZFOOD50 (americano+ice+large), (machiato+ice+medium), (iceCoffee+ice+large).
+insert into "orders" ("userid", "orderNumber", "promoid", "total", "status", "deliveryAddress", "fullName", "email")
+values (2, 'ORD-010-12112023',(select "id" from "promo" where "code" = 'FAZZFOOD50' limit 1), 
+  (select SUM(subtotal) from "orderDetails" where "orderId" in (
+    select "id" from "orders" where "orderNumber" = 'ORD-010-12112023'limit 1
+  )),
+  'delivered', '99 bali, sanur', 'Rahman Sofyan', 'rahman@gmail.com');
+
+
+-- Detail transaksi untuk americano+ice+large
+insert into "orderDetails" ("productid", "productSizeid", "productVariantid", "quantity", "orderId", "subtotal")
+values (
+  (select "id" from "products" where "name" = 'Americano' limit 1),
+  (select "id" from "productSize" where "size" = 'large' limit 1),
+  (select "id" from "productVariant" where "name" = 'ice' limit 1),
+  1,
+  (select "id" from "orders" where "orderNumber" = 'ORD-010-12112023' limit 1),
+  (select "basePrice" + 
+    (select "additionalPrice" from "productVariant" WHERE "name" = 'ice' limit 1) + 
+    (select "additionalPrice" from "productSize" WHERE "size" = 'large' limit 1)
+  from "products" where "name" = 'Americano' limit 1)
+);
+
+
+-- Detail transaksi untuk machiato+ice+medium
+insert into "orderDetails" ("productid", "productSizeid", "productVariantid", "quantity", "orderId", "subtotal")
+values (
+  (select "id" from "products" where "name" = 'Macchiato'limit 1),
+  (select "id" from "productSize" where "size" = 'medium'limit 1),
+  (select "id" from "productVariant" where "name" = 'ice'limit 1),
+  1,
+  (select "id" from "orders" where "orderNumber" = 'ORD-010-12112023'limit 1),
+  (select 
+    "basePrice" + 
+    (select "additionalPrice" from "productVariant" WHERE "name" = 'ice' limit 1) + 
+    (select "additionalPrice" from "productSize" WHERE "size" = 'medium' limit 1)
+  from "products" where "name" = 'Macchiato'limit 1)
+);
+
+-- Detail transaksi untuk iceCoffee+ice+large
+INSERT INTO "orderDetails" ("productid", "productSizeid", "productVariantid", "quantity", "orderId", "subtotal")
+VALUES (
+  (select "id" from "products" where "name" = 'Iced Coffee'limit 1),
+  (select "id" from "productSize" where "size" = 'large'limit 1),
+  (select "id" from "productVariant" where "name" = 'ice'limit 1),
+  1,
+  (select "id" from "orders" where "orderNumber" = 'ORD-010-12112023'limit 1),
+  (select 
+    "basePrice" + 
+    (select "additionalPrice" from "productVariant" WHERE "name" = 'ice' limit 1) + 
+    (select "additionalPrice" from "productSize" WHERE "size" = 'large' limit 1)
+  from "products" where "name" = 'Iced Coffee'limit 1)
+);
+
+
+--pencarian nama barang
+select * from "products" "p" where "name" = 'Mocha';
+select * from "products" "p" where "name" ilike '%ch%' ;
+
+
+--joint
 select "o"."orderNumber" ,"p"."name", "od"."quantity" ,"od"."subtotal", "o"."total" from "orders" "o"
 join "orderDetails" "od" on "od"."orderId" = "o"."id"
 join "products" "p" on "od"."productid" = "p"."id";
+
+-- Mengubah menjadi LEFT JOIN
+select "o"."orderNumber", "p"."name", "od"."quantity", "od"."subtotal", "o"."total"
+from "orders" "o"
+left join "orderDetails" "od" on "od"."orderId" = "o"."id"
+left join "products" "p" on "od"."productid" = "p"."id";
+
+-- Mengubah menjadi RIGHT JOIN
+select "o"."orderNumber", "p"."name", "od"."quantity", "od"."subtotal", "o"."total"
+from "orders" "o"
+right join "orderDetails" "od" on "od"."orderId" = "o"."id"
+right join "products" "p" on "od"."productid" = "p"."id";
+
 
 
