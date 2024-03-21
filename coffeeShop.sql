@@ -16,7 +16,7 @@ create table if not exists "products" (
     "description" text,
     "basePrice" int not null,
     "image" varchar,
-    "discount" numeric(3,2),
+    "discount" float,
     "isRecommended" boolean,
     "created_at" timestamp default now() not null,
 	"update_at" timestamp
@@ -392,22 +392,76 @@ select * from "products" "p" where "name" = 'Mocha';
 select * from "products" "p" where "name" ilike '%ch%' ;
 
 
+
 --joint
 select "o"."orderNumber" ,"p"."name", "od"."quantity" ,"od"."subtotal", "o"."total" from "orders" "o"
 join "orderDetails" "od" on "od"."orderId" = "o"."id"
 join "products" "p" on "od"."productid" = "p"."id";
 
--- Mengubah menjadi LEFT JOIN
-select "o"."orderNumber", "p"."name", "od"."quantity", "od"."subtotal", "o"."total"
-from "orders" "o"
-left join "orderDetails" "od" on "od"."orderId" = "o"."id"
-left join "products" "p" on "od"."productid" = "p"."id";
-
--- Mengubah menjadi RIGHT JOIN
-select "o"."orderNumber", "p"."name", "od"."quantity", "od"."subtotal", "o"."total"
-from "orders" "o"
-right join "orderDetails" "od" on "od"."orderId" = "o"."id"
-right join "products" "p" on "od"."productid" = "p"."id";
 
 
 
+-- Perbaikan Tugas
+
+-- Like
+select * from "users" "u" where "fullName" LIKE '%Budi%';
+
+-- Sort
+select * from "products" "p" where "name" ilike '%cap' order by "name" ASC;
+select * from "products" "p" where "name" ilike '%cap' order by "name" DESC;
+
+-- Limit
+select * from "products" "p" limit 5;
+
+-- Edit Tabel
+ALTER TABLE "users"
+RENAME COLUMN "created_at" TO "createdAt";
+ALTER TABLE "users"
+RENAME COLUMN "update_at" TO "updateAt";
+
+ALTER TABLE "products"
+RENAME COLUMN "created_at" TO "createdAt";
+
+ALTER TABLE "products"
+RENAME COLUMN "update_at" TO "updateAt";
+
+-- Left and Right Join
+
+  SELECT 
+        "p"."id",
+        "p"."name",
+        "c"."name" AS "kategori product",
+        "p"."basePrice",
+        "p"."image",
+        "p"."description",
+        "p"."discount",
+        "p"."isRecommended",
+        "p"."createdAt"
+    FROM "products" "p"
+    LEFT JOIN "productCategories" "pc" ON "pc"."productid" = "p"."id"
+    LEFT JOIN "categories" "c" ON "pc"."categoryid" = "c"."id"
+    WHERE "p"."name" ILIKE '%ca%' AND "isRecommended" = 'true'
+    ORDER BY "p"."name" ASC;
+
+	--melakukan filter product hanya yg memiliki nama "ca" dan isrecomend yg akan tampil
+	
+
+
+  SELECT 
+   "o"."orderNumber", 
+   "p"."name", 
+   "od"."quantity", 
+   "od"."subtotal", 
+   "o"."total", 
+   "u"."fullName", 
+   "u"."address", 
+   "u"."phoneNumber"
+FROM "orders" "o"
+RIGHT join "users" "u" on "o"."userid" = "u"."id" 
+RIGHT JOIN "orderDetails" "od" ON "od"."orderId" = "o"."id"
+RIGHT JOIN "products" "p" ON "od"."productid" = "p"."id"
+WHERE "u"."fullName" LIKE '%siti%'
+LIMIT 5
+OFFSET 0;
+
+--melakukan filter user hanya yg bernama "siti" , dengan order number nama product yg di beli dan jumlah order item, di mulai dari baris pertama dan batasi 5 data
